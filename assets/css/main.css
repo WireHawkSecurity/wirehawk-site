@@ -63,6 +63,7 @@ a {
 @media (hover: hover) {
   a:hover { color: var(--red); }
 }
+a:active { color: var(--red); }
 
 /* --- Accessibility --- */
 .sr-only {
@@ -175,6 +176,9 @@ a {
     color: var(--red);
   }
 }
+.header-logo:active .header-logo-text {
+  color: var(--red);
+}
 
 .header-nav {
   display: flex;
@@ -192,6 +196,7 @@ a {
 @media (hover: hover) {
   .header-nav a:hover { color: var(--red); }
 }
+.header-nav a:active { color: var(--red); }
 
 .header-nav .nav-cta {
   color: #e8e8e8;
@@ -210,6 +215,9 @@ a {
   .header-nav .nav-cta:hover {
     color: var(--red);
   }
+}
+.header-nav .nav-cta:active {
+  color: var(--red);
 }
 
 /* --- Mobile Menu --- */
@@ -264,6 +272,7 @@ a {
 @media (hover: hover) {
   .mobile-nav a:hover { color: var(--red); }
 }
+.mobile-nav a:active { color: var(--red); }
 
 /* Contact Us carries the same outlined-CTA treatment as the desktop header nav
    so the primary action stands out from the plain nav links. Text stays at the
@@ -286,6 +295,9 @@ a {
   .mobile-nav a[href="#contact"]:hover {
     color: var(--red);
   }
+}
+.mobile-nav a[href="#contact"]:active {
+  color: var(--red);
 }
 
 .mobile-nav-socials { margin-top: 8px; }
@@ -328,6 +340,7 @@ body.mobile-nav-open .mobile-menu-toggle span:nth-child(3) {
 @media (hover: hover) {
   .social-icons a:hover { color: var(--red); }
 }
+.social-icons a:active { color: var(--red); }
 
 /* --- Hero --- */
 /* [CHANGE 4] Larger bottom gap entering content sections */
@@ -750,6 +763,9 @@ section h2 {
     color: var(--red);
   }
 }
+.btn-ghost:active {
+  color: var(--red);
+}
 
 /* --- Contact --- */
 .contact {
@@ -856,6 +872,9 @@ section h2 {
   .btn-submit:hover {
     color: var(--red);
   }
+}
+.btn-submit:active:not(:disabled) {
+  color: var(--red);
 }
 
 .btn-submit:disabled {
