@@ -1,0 +1,28 @@
+baseURL = "https://wirehawksecurity.com/"
+languageCode = "en-us"
+title = "WireHawk Security | Penetration Testing & Offensive Security"
+
+[params]
+  description = "WireHawk Security is an Arizona-based, veteran-owned offensive security firm specializing in penetration testing across web applications, networks, cloud environments, and AI/LLM systems."
+  author = "WireHawk Security, LLC"
+
+  # Contact form (Formspree) — live endpoint; flows to the form's action attribute
+  formspreeEndpoint = "https://formspree.io/f/maqglley"
+
+  # Blog RSS feed
+  blogRSS = "https://blog.wirehawksecurity.com/index.xml"
+  blogURL = "https://blog.wirehawksecurity.com"
+
+  # Social links
+  [params.social]
+    twitter = "https://x.com/WireHawkSec"
+    linkedin = "https://www.linkedin.com/company/wirehawk-security/"
+    github = "https://github.com/WireHawkSecurity"
+    youtube = "https://www.youtube.com/@WireHawkSecurity"
+    discord = "https://discord.gg/QrCxzegqrJ"
+    rss = "https://blog.wirehawksecurity.com/index.xml"
+
+# Google Analytics 4
+[services]
+  [services.googleAnalytics]
+    id = "G-3XXGGWQ4GP"

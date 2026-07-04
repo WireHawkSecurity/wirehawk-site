@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Title }}</title>
+  <meta name="description" content="{{ .Site.Params.description }}">
+  <meta name="author" content="{{ .Site.Params.author }}">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ .Site.BaseURL }}">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ .Title }}">
+  <meta property="og:description" content="{{ .Site.Params.description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ .Site.BaseURL }}">
+  <meta property="og:image" content="{{ .Site.BaseURL }}images/wirehawk-wordmark.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ .Title }}">
+  <meta name="twitter:description" content="{{ .Site.Params.description }}">
+  <meta name="twitter:image" content="{{ .Site.BaseURL }}images/wirehawk-wordmark.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="/images/wirehawk-hawk.jpg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.Permalink }}">
+
+  <!-- GA4 -- only fires when built with: HUGO_ENV=production hugo -->
+  {{ if eq (hugo.Environment) "production" }}
+    {{ template "_internal/google_analytics.html" . }}
+  {{ end }}
+
+  <!-- Structured data (ProfessionalService). safeJS stops the <script> JS-context
+       auto-escaper from double-encoding jsonify output. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": {{ .Site.Params.author | jsonify | safeJS }},
+    "url": {{ .Site.BaseURL | jsonify | safeJS }},
+    "logo": {{ "images/wirehawk-hawk.jpg" | absURL | jsonify | safeJS }},
+    "image": {{ "images/wirehawk-wordmark.png" | absURL | jsonify | safeJS }},
+    "description": {{ .Site.Params.description | jsonify | safeJS }},
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Phoenix",
+      "addressRegion": "AZ",
+      "addressCountry": "US"
+    },
+    "areaServed": "United States",
+    "knowsAbout": ["Penetration Testing", "Offensive Security", "Web Application Security", "Cloud Security", "Network Security", "AI/LLM Security"],
+    "sameAs": [
+      {{ .Site.Params.social.twitter | jsonify | safeJS }},
+      {{ .Site.Params.social.linkedin | jsonify | safeJS }},
+      {{ .Site.Params.social.github | jsonify | safeJS }},
+      {{ .Site.Params.social.youtube | jsonify | safeJS }},
+      {{ .Site.Params.social.discord | jsonify | safeJS }}
+    ]
+  }
+  </script>
+</head>
+<body>
+  {{ block "main" . }}{{ end }}
+</body>
+</html>
