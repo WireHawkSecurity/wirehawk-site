@@ -60,7 +60,9 @@ a {
   transition: color .2s;
 }
 
-a:hover { color: var(--red); }
+@media (hover: hover) {
+  a:hover { color: var(--red); }
+}
 
 /* --- Accessibility --- */
 .sr-only {
@@ -168,8 +170,10 @@ a:hover { color: var(--red); }
   transition: color .2s;
 }
 
-.header-logo:hover .header-logo-text {
-  color: var(--red);
+@media (hover: hover) {
+  .header-logo:hover .header-logo-text {
+    color: var(--red);
+  }
 }
 
 .header-nav {
@@ -185,7 +189,9 @@ a:hover { color: var(--red); }
   transition: color .2s;
 }
 
-.header-nav a:hover { color: var(--red); }
+@media (hover: hover) {
+  .header-nav a:hover { color: var(--red); }
+}
 
 .header-nav .nav-cta {
   color: #e8e8e8;
@@ -196,9 +202,14 @@ a:hover { color: var(--red); }
   transition: color .3s ease;
 }
 
-.header-nav .nav-cta:hover,
 .header-nav .nav-cta:focus-visible {
   color: var(--red);
+}
+
+@media (hover: hover) {
+  .header-nav .nav-cta:hover {
+    color: var(--red);
+  }
 }
 
 /* --- Mobile Menu --- */
@@ -250,7 +261,9 @@ a:hover { color: var(--red); }
   color: var(--text);
 }
 
-.mobile-nav a:hover { color: var(--red); }
+@media (hover: hover) {
+  .mobile-nav a:hover { color: var(--red); }
+}
 
 /* Contact Us carries the same outlined-CTA treatment as the desktop header nav
    so the primary action stands out from the plain nav links. Text stays at the
@@ -265,9 +278,14 @@ a:hover { color: var(--red); }
   transition: color .3s ease;
 }
 
-.mobile-nav a[href="#contact"]:hover,
 .mobile-nav a[href="#contact"]:focus-visible {
   color: var(--red);
+}
+
+@media (hover: hover) {
+  .mobile-nav a[href="#contact"]:hover {
+    color: var(--red);
+  }
 }
 
 .mobile-nav-socials { margin-top: 8px; }
@@ -307,7 +325,9 @@ body.mobile-nav-open .mobile-menu-toggle span:nth-child(3) {
   display: flex;
 }
 
-.social-icons a:hover { color: var(--red); }
+@media (hover: hover) {
+  .social-icons a:hover { color: var(--red); }
+}
 
 /* --- Hero --- */
 /* [CHANGE 4] Larger bottom gap entering content sections */
@@ -618,10 +638,12 @@ section h2 {
   transition: border-color .2s, transform .2s;
 }
 
-.blog-card:hover {
-  border-color: rgba(255,255,255,.30);
-  transform: translateY(-2px);
-  color: var(--text);
+@media (hover: hover) {
+  .blog-card:hover {
+    border-color: rgba(255,255,255,.30);
+    transform: translateY(-2px);
+    color: var(--text);
+  }
 }
 
 .blog-card-image {
@@ -684,8 +706,10 @@ section h2 {
   transition: background 0.3s ease;
 }
 
-.blog-dot:hover {
-  background: rgba(255, 255, 255, 0.35);
+@media (hover: hover) {
+  .blog-dot:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
 }
 
 .blog-dot.active {
@@ -717,9 +741,14 @@ section h2 {
   transition: color .3s ease;
 }
 
-.btn-ghost:hover,
 .btn-ghost:focus-visible {
   color: var(--red);
+}
+
+@media (hover: hover) {
+  .btn-ghost:hover {
+    color: var(--red);
+  }
 }
 
 /* --- Contact --- */
@@ -819,9 +848,14 @@ section h2 {
   transition: color .3s ease;
 }
 
-.btn-submit:hover,
 .btn-submit:focus-visible {
   color: var(--red);
+}
+
+@media (hover: hover) {
+  .btn-submit:hover {
+    color: var(--red);
+  }
 }
 
 .btn-submit:disabled {
