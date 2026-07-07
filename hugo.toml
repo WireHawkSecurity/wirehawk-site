@@ -2,6 +2,13 @@ baseURL = "https://wirehawksecurity.com/"
 languageCode = "en-us"
 title = "WireHawk Security | Penetration Testing & Offensive Security"
 
+# Single-page site: disable Hugo's auto-generated taxonomy pages (/categories/,
+# /tags/) and RSS feeds. They render empty, would appear in the sitemap as URLs
+# that 404 (no list template => no index.html), and leave an orphan site feed.
+# This keeps built output to just the homepage. (Minimum to fix the sitemap:
+# ["taxonomy", "term"]; adding "RSS" also drops the unused site /index.xml.)
+disableKinds = ["taxonomy", "term", "RSS"]
+
 [params]
   description = "WireHawk Security is an Arizona-based, veteran-owned offensive security firm specializing in penetration testing across web applications, networks, cloud environments, and AI/LLM systems."
   author = "WireHawk Security, LLC"
