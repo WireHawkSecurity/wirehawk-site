@@ -246,21 +246,40 @@ a:active { color: var(--red); }
   top: var(--header-h);
   left: 0;
   right: 0;
-  bottom: 0;
+  /* Height is content-driven: the sheet ends just below the socials instead of
+     stretching to the viewport floor. A hairline marks its bottom edge, and the
+     ::before scrim below dims the page rather than leaving inert black space.
+     (No transform on this element -- a transform would re-root the fixed ::before
+     scrim to the sheet's box and collapse it; the fade alone carries the open.) */
   background: var(--bg);
+  border-bottom: 1px solid var(--border-subtle);
   z-index: 99;
   flex-direction: column;
   align-items: center;
-  /* Anchor the menu near the top with a comfortable offset rather than
-     dead-centering it. Centered, a handful of links floated in the middle with
-     ~240px of empty space above and below; top-aligned reads as intentional and
-     the remaining space falls to the bottom as ordinary overlay background. */
   justify-content: flex-start;
-  padding-top: 56px;
+  padding: 40px var(--pad) 44px;
   gap: 28px;
   opacity: 0;
   pointer-events: none;
   transition: opacity .3s;
+}
+
+/* Full-viewport dim behind the sheet. Fixed to the viewport (the nav sets no
+   transform/filter, so fixed stays viewport-relative), so it fills everything
+   below the header regardless of the sheet's content height. z-index:-1 keeps it
+   behind the sheet's own background but above the page, within the nav's z:99
+   stacking context. pointer-events is inherited from the nav (none when closed,
+   auto when open) so it blocks page taps while the menu is up, matching the old
+   full-height overlay. Pure CSS -- no extra element, no JS. */
+.mobile-nav::before {
+  content: "";
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
 }
 
 .mobile-nav a {
