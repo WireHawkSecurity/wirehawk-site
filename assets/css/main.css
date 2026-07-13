@@ -251,11 +251,12 @@ a:active { color: var(--red); }
      ::before scrim below dims the page rather than leaving inert black space.
      (No transform on this element -- a transform would re-root the fixed ::before
      scrim to the sheet's box and collapse it; the fade alone carries the open.) */
-  background: #101010; /* header color -- makes the sheet a cohesive panel that
-                          steps down to the darker dimmed page at its bottom edge,
-                          giving clear separation there (a #101010 hairline on a
-                          pure-black sheet would be invisible). */
-  border-bottom: 1px solid var(--border-subtle);
+  background: #101010; /* header color: header + menu read as one panel that
+                          steps down to the darker dimmed page at the sheet's
+                          bottom edge. */
+  border-bottom: 1px solid var(--border); /* visible hairline (same line the cards
+                          use) marks that edge -- the fill step alone is too subtle,
+                          and a #101010-colored line would be invisible on black. */
   z-index: 99;
   flex-direction: column;
   align-items: center;
