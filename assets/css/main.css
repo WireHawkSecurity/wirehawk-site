@@ -251,7 +251,10 @@ a:active { color: var(--red); }
      ::before scrim below dims the page rather than leaving inert black space.
      (No transform on this element -- a transform would re-root the fixed ::before
      scrim to the sheet's box and collapse it; the fade alone carries the open.) */
-  background: var(--bg);
+  background: #101010; /* header color -- makes the sheet a cohesive panel that
+                          steps down to the darker dimmed page at its bottom edge,
+                          giving clear separation there (a #101010 hairline on a
+                          pure-black sheet would be invisible). */
   border-bottom: 1px solid var(--border-subtle);
   z-index: 99;
   flex-direction: column;
