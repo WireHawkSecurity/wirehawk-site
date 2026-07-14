@@ -15,13 +15,16 @@
   <meta property="og:description" content="{{ .Site.Params.description }}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ .Site.BaseURL }}">
-  <meta property="og:image" content="{{ .Site.BaseURL }}images/wirehawk-wordmark.png">
+  <meta property="og:image" content="{{ .Site.BaseURL }}images/wirehawk-og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ .Title }}">
   <meta name="twitter:description" content="{{ .Site.Params.description }}">
-  <meta name="twitter:image" content="{{ .Site.BaseURL }}images/wirehawk-wordmark.png">
+  <meta name="twitter:image" content="{{ .Site.BaseURL }}images/wirehawk-og.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/jpeg" href="/images/wirehawk-hawk.jpg">
@@ -49,7 +52,7 @@
     "name": {{ .Site.Params.author | jsonify | safeJS }},
     "url": {{ .Site.BaseURL | jsonify | safeJS }},
     "logo": {{ "images/wirehawk-hawk.jpg" | absURL | jsonify | safeJS }},
-    "image": {{ "images/wirehawk-wordmark.png" | absURL | jsonify | safeJS }},
+    "image": {{ "images/wirehawk-og.png" | absURL | jsonify | safeJS }},
     "description": {{ .Site.Params.description | jsonify | safeJS }},
     "address": {
       "@type": "PostalAddress",
