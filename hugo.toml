@@ -16,6 +16,10 @@ disableKinds = ["taxonomy", "term", "RSS"]
   # Contact form (Formspree) — live endpoint; flows to the form's action attribute
   formspreeEndpoint = "https://formspree.io/f/maqglley"
 
+  # Cloudflare Web Analytics — public client-side beacon token (ships in page HTML,
+  # not a secret). Consumed in baseof.html; only injected on production builds.
+  cloudflareAnalytics = "5934cb0643184800a4ca1bfeeb849b44"
+
   # Blog RSS feed
   blogRSS = "https://blog.wirehawksecurity.com/index.xml"
   blogURL = "https://blog.wirehawksecurity.com"
@@ -28,8 +32,3 @@ disableKinds = ["taxonomy", "term", "RSS"]
     youtube = "https://www.youtube.com/@WireHawkSecurity"
     discord = "https://discord.gg/QrCxzegqrJ"
     rss = "https://blog.wirehawksecurity.com/index.xml"
-
-# Google Analytics 4
-[services]
-  [services.googleAnalytics]
-    id = "G-3XXGGWQ4GP"

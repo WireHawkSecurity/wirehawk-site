@@ -38,9 +38,11 @@
   {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.Permalink }}">
 
-  <!-- GA4 -- only fires when built with: HUGO_ENV=production hugo -->
+  <!-- Cloudflare Web Analytics — only injected on production builds
+       (HUGO_ENV=production), keeping localhost dev traffic out of the dashboard.
+       Token is a public client-side identifier set in hugo.toml. -->
   {{ if eq (hugo.Environment) "production" }}
-    {{ template "_internal/google_analytics.html" . }}
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ .Site.Params.cloudflareAnalytics }}"}'></script>
   {{ end }}
 
   <!-- Structured data (ProfessionalService). safeJS stops the <script> JS-context
