@@ -157,14 +157,14 @@ a:active { color: var(--red); }
 }
 
 .header-logo img {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 3px;
   mix-blend-mode: lighten;
 }
 
 .header-logo-text {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 3px;
   color: #e8e8e8;
@@ -1054,11 +1054,11 @@ section h2 {
 
   body { font-size: 16px; }
 
-  /* Bumped from 28px/10px so the brand mark reads clearly in the 50px bar;
-     34px leaves ~8px vertical breathing and there is ~110px of horizontal slack
-     before the menu button, so no crowding. */
-  .header-logo img { width: 34px; height: 34px; }
-  .header-logo-text { font-size: 12px; letter-spacing: 2px; }
+  /* Sized so the brand mark reads clearly in the 50px bar; 36px leaves ~7px
+     vertical breathing and there is ample horizontal slack before the menu
+     button, so no crowding. */
+  .header-logo img { width: 36px; height: 36px; }
+  .header-logo-text { font-size: 13px; letter-spacing: 2px; }
 
   /* Break the wordmark out of the page padding and scale it up so the logo
      reads as the dominant hero element on narrow phones. object-fit: cover is
