@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUGO_VERSION: 0.128.0          # bump as desired; extended edition required
-      HUGO_ENVIRONMENT: production   # enables the GA4 snippet
+      HUGO_ENVIRONMENT: production   # gates the Cloudflare Analytics beacon to production (see baseof.html)
     steps:
       - name: Install Hugo CLI (extended)
         run: |
