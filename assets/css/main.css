@@ -906,11 +906,26 @@ section h2 {
   cursor: not-allowed;
 }
 
+/* Success state — replaces the form after a successful submit.
+   Elevated + vertically centered so it reads as a deliberate
+   confirmation instead of stray body text; the now-redundant intro
+   is hidden (:has) so the card reads cleanly heading -> confirmation.
+   The card's existing red top-accent hairline carries the brand mark. */
+.section-card:has(.form-success) .contact-intro {
+  display: none;
+}
+
 .form-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  padding: 32px 0;
   text-align: center;
-  color: var(--text);
-  font-size: 17px;
-  padding: 36px 0;
+  color: var(--heading);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 /* --- Footer --- */
