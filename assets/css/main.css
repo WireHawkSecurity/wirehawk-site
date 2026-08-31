@@ -907,20 +907,22 @@ section h2 {
 }
 
 /* Success state — replaces the form after a successful submit.
-   Elevated + vertically centered so it reads as a deliberate
-   confirmation instead of stray body text; the now-redundant intro
+   Elevated and constrained to the form's own 560px measure so it holds
+   the same optical column the fields occupied; the now-redundant intro
    is hidden (:has) so the card reads cleanly heading -> confirmation.
+   Vertical spacing is one --gap unit top and bottom rather than an
+   artificial min-height box: the box manufactured hollow space that then
+   stacked onto the card's own bottom padding, leaving the line sitting low.
+   Deriving from the token also scales this to each breakpoint for free.
    The card's existing red top-accent hairline carries the brand mark. */
 .section-card:has(.form-success) .contact-intro {
   display: none;
 }
 
 .form-success {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 150px;
-  padding: 32px 0;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--gap) 0;
   text-align: center;
   color: var(--heading);
   font-size: 19px;
@@ -1102,6 +1104,15 @@ section h2 {
 
   section h2 {
     font-size: 22px;
+  }
+
+  /* At the desktop 19px this wraps to two lines on a 393px phone and reads
+     nearly as large as the 22px heading; 16px holds it on one line and keeps it
+     subordinate, while weight 600 + --heading keep it emphatic against the 16px
+     body. Vertical padding needs no override -- the base rule derives it from
+     --gap, which already steps down to 32px at this breakpoint. */
+  .form-success {
+    font-size: 16px;
   }
 
   /* Single-column stack: give each category a divider between it and the next
