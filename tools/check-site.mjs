@@ -120,7 +120,7 @@ check('hover-gated', !ungated.length, ungated.map(r => r.prelude).join('; '));
 const combined = css.filter(r => r.prelude.includes(':hover') && r.prelude.includes(':focus-visible'));
 check('hover-focus-split', !combined.length, combined.map(r => r.prelude).join('; '));
 
-const ACTIVE_NEEDED = ['.header-nav .nav-cta', '.mobile-nav a[href="#contact"]', '.btn-ghost', '.btn-submit'];
+const ACTIVE_NEEDED = ['.header-nav .nav-cta', '.mobile-nav a[href="#contact"]', '.btn-ghost', '.btn-submit', '.blog-arrow'];
 const missingActive = ACTIVE_NEEDED.filter(sel => !css.some(r =>
   r.selectors.some(s => s.startsWith(sel + ':active')) && !r.context.some(c => HOVER_GATE.test(c))));
 check('active-tap-states', !missingActive.length, missingActive.length ? `missing ungated :active for ${missingActive.join(', ')}` : '');
@@ -146,23 +146,44 @@ for (const r of rootRules) {
     if (cr < 4.5) contrastBad.push(`${fg} ${t[fg]} on ${bg} ${t[bg]} = ${cr.toFixed(2)}:1 (${ctxKey(r)})`);
   }
 }
+// Interaction red must clear 4.5:1 on every surface it appears on (header fill #101010 is a fixed value)
+for (const surface of [['--card', baseTokens['--card']], ['--bg', baseTokens['--bg']], ['header', '#101010']]) {
+  const rb = baseTokens['--red-bright'];
+  if (!/^#[0-9a-f]{6}$/i.test(rb || '')) { contrastBad.push('--red-bright missing or not a 6-digit hex'); break; }
+  const cr = ratio(rb, surface[1]);
+  if (cr < 4.5) contrastBad.push(`--red-bright ${rb} on ${surface[0]} = ${cr.toFixed(2)}:1`);
+}
 check('contrast-floors', !contrastBad.length, contrastBad.join('; '));
 
-// One red, shared with the blog: no second red tone may creep back in (--red-rgb is the same red as channels)
+// Exactly two red tones, each with an RGB-channel twin for tints: --red (rest) and --red-bright (interaction)
+const RED_TOKENS = ['--red', '--red-rgb', '--red-bright', '--red-bright-rgb'];
 const extraRed = css.filter(r => r.prelude === ':root').flatMap(r => r.decls)
-  .filter(([p]) => /^--red./.test(p) && p !== '--red-rgb').map(([p, v]) => `${p}: ${v}`);
-check('single-red-token', !extraRed.length, `only --red / --red-rgb are allowed (matches the blog): ${extraRed.join(', ')}`);
+  .filter(([p]) => /^--red/.test(p) && !RED_TOKENS.includes(p)).map(([p, v]) => `${p}: ${v}`);
+check('red-tokens', !extraRed.length && RED_TOKENS.every(t => baseTokens[t]),
+  `allowed: ${RED_TOKENS.join(', ')}; unexpected: ${extraRed.join(', ') || 'none'}; missing: ${RED_TOKENS.filter(t => !baseTokens[t]).join(', ') || 'none'}`);
 
-// Every red tint derives from --red-rgb, and --red-rgb equals --red (mirrors the blog's --wh-red-rgb)
-const redHex = (baseTokens['--red'] || '').replace('#', '');
-const redCh = redHex.length === 6 ? [0, 2, 4].map(i => parseInt(redHex.slice(i, i + 2), 16)).join(', ') : '';
-const rgbTok = (baseTokens['--red-rgb'] || '').split(',').map(v => v.trim()).join(', ');
+// Every red tint derives from its -rgb token, each -rgb equals its hex, and neither red is hand-typed elsewhere
 const cssNoComments = read('assets/css/main.css').replace(/\/\*[\s\S]*?\*\//g, '');
-const triplet = redCh ? new RegExp(redCh.replace(/, /g, ',\\s*'), 'g') : null;
-const handTyped = triplet ? (cssNoComments.match(triplet) || []).length - 1 : 0;   // minus the --red-rgb definition itself
-const hexCopies = (cssNoComments.match(new RegExp('#' + redHex, 'gi')) || []).length - 1;  // minus the --red definition
-check('red-single-source', !!redCh && rgbTok === redCh && handTyped === 0 && hexCopies === 0,
-  `--red-rgb (${rgbTok || 'missing'}) must equal --red (${redCh}); hand-typed red copies: ${Math.max(handTyped, 0) + Math.max(hexCopies, 0)}`);
+const channels = hex => { const h = (hex || '').replace('#', ''); return h.length === 6 ? [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)).join(', ') : ''; };
+const srcBad = [];
+for (const [hexTok, rgbTok] of [['--red', '--red-rgb'], ['--red-bright', '--red-bright-rgb']]) {
+  const ch = channels(baseTokens[hexTok]);
+  const tok = (baseTokens[rgbTok] || '').split(',').map(v => v.trim()).join(', ');
+  if (!ch || tok !== ch) { srcBad.push(`${rgbTok} (${tok || 'missing'}) must equal ${hexTok} (${ch})`); continue; }
+  const triplets = (cssNoComments.match(new RegExp(ch.replace(/, /g, ',\\s*'), 'g')) || []).length - 1;   // minus the -rgb definition
+  const hexes = (cssNoComments.match(new RegExp(baseTokens[hexTok], 'gi')) || []).length - 1;            // minus the hex definition
+  if (triplets > 0 || hexes > 0) srcBad.push(`${triplets + hexes} hand-typed cop${triplets + hexes > 1 ? 'ies' : 'y'} of ${hexTok}`);
+}
+check('red-single-source', !srcBad.length, srcBad.join('; '));
+
+// Hover / focus / press foregrounds use --red-bright, never brand --red (3.45-3.86:1 fails as small text)
+const STATE = /:(hover|focus|focus-visible|active)\b/;
+const stateBrand = css.filter(r => r.selectors.some(s => STATE.test(s)) &&
+  r.decls.some(([p, v]) => ['color', 'border-color', 'outline', 'outline-color', 'border'].includes(p) && /var\(--red\)/.test(v)));
+check('state-colors-bright', !stateBrand.length, stateBrand.map(r => r.prelude).join('; '));
+// ...and --red-bright is foreground only: white text on it is 3.82:1
+const brightBg = css.filter(r => r.decls.some(([p, v]) => ['background', 'background-color'].includes(p) && /var\(--red-bright/.test(v)));
+check('bright-red-foreground-only', !brightBg.length, brightBg.map(r => r.prelude).join('; '));
 
 // Form success state: no min-height; base padding token-derived; breakpoint overrides are font-size only
 const fs = css.filter(r => r.selectors.includes('.form-success'));
@@ -288,14 +309,49 @@ const fillCue = !!dotRule && val(dotRule, 'background') === 'transparent' &&
 check('dot-contrast-and-cue', ringRatio >= 3 && fillCue,
   `inactive dot ring ${ringRatio.toFixed(2)}:1 (needs 3:1); inactive must be hollow and active filled`);
 
-/* --- Known, accepted open items (reported, never blocking) --- */
-// Hover / focus / press text uses brand --red to match the blog; small text needs 4.5:1
-const STATE = /:(hover|focus|focus-visible|active)\b/;
-const stateRed = css.some(r => r.selectors.some(s => STATE.test(s)) && r.decls.some(([p, v]) => p === 'color' && v === 'var(--red)'));
-const worst = red ? Math.min(ratio(red, baseTokens['--card']), ratio(red, '#101010')) : 5;
-if (stateRed && worst < 4.5) {
-  warn('state-red-contrast', `hover/focus/press text in --red is ${worst.toFixed(2)}:1 at worst (needs 4.5:1) — accepted to match the blog (Open Item)`);
-}
+// Carousel arrows: labelled, aria-disabled at the ends (never `disabled`, which would drop keyboard focus),
+// and the dimmed end-state rule comes after the hover/active rules so it wins
+const carouselJS = (indexHTML.match(/function buildCarousel[\s\S]*?\n {2}\}\n/) || [''])[0];   // the carousel's own code only
+const arrowJS = carouselJS.includes("'Previous posts'") && carouselJS.includes("'Next posts'") &&
+  /setAttribute\('aria-disabled'/.test(carouselJS) && !/\.disabled\s*=|setAttribute\('disabled'/.test(carouselJS);
+const ruleIdx = pred => css.findIndex(pred);
+const iDisabled = ruleIdx(r => r.prelude === '.blog-arrow[aria-disabled="true"]');
+const iHover = ruleIdx(r => r.prelude === '.blog-arrow:hover'), iActive = ruleIdx(r => r.prelude === '.blog-arrow:active');
+const hiddenRule = css.find(r => r.prelude === '.blog-controls[hidden]');
+check('carousel-arrows', arrowJS && iDisabled > iHover && iDisabled > iActive && iHover >= 0 && iActive >= 0 &&
+  !!hiddenRule && val(hiddenRule, 'display') === 'none',
+  'arrows need aria-labels + aria-disabled ends (no `disabled`), the end-state rule after :hover/:active, and .blog-controls[hidden] { display: none }');
+
+// Carousel controls spacing: the dots sit centred between the cards and View Our Blog. --controls-space is the
+// visible gap above and below them: mouse = the .form-consent gap above Submit (rhythm); touch (pointer: coarse)
+// leaves >= 24px of dead space between the arrows' tap boxes and the cards / button. The calc's box and dot
+// sizes must match the real ones, and the controls' bottom margin must stay inside the carousel (margin-bottom 0
+// while they show) so the arrows' focus outline isn't clipped.
+const carBase = css.find(r => r.prelude === '.blog-carousel' && !r.context.length);
+const ctlBase = css.find(r => r.prelude === '.blog-controls' && !r.context.length);
+const arrowBase = css.find(r => r.prelude === '.blog-arrow' && !r.context.length);
+const coarseCar = css.find(r => r.prelude === '.blog-carousel' && r.context.some(c => /pointer\s*:\s*coarse/.test(c)));
+const hasCtl = css.find(r => r.prelude === '.blog-carousel:has(> .blog-controls:not([hidden]))');
+const ctlCalc = (ctlBase && val(ctlBase, 'margin-block') || '').match(/^calc\(var\(--controls-space\) - \((\d+(?:\.\d+)?)px - (\d+(?:\.\d+)?)px\) \/ 2\)$/);
+const boxSlack = ctlCalc ? (+ctlCalc[1] - +ctlCalc[2]) / 2 : NaN;
+const mouseSpace = carBase && val(carBase, '--controls-space'), touchSpace = coarseCar && val(coarseCar, '--controls-space');
+const strayCtlMargins = css.filter(r => r !== ctlBase && r.selectors.some(sel => sel === '.blog-controls') ||
+  r === ctlBase && r.decls.some(([pr]) => pr !== 'margin-block' && /^margin/.test(pr)))
+  .filter(r => r.decls.some(([pr]) => /^margin/.test(pr)));
+const spacingIssues = [
+  !ctlCalc && '.blog-controls needs margin-block: calc(var(--controls-space) - (<arrow height> - <dot height>) / 2)',
+  ctlCalc && (+ctlCalc[1] !== px(arrowBase && val(arrowBase, 'height')) || +ctlCalc[2] !== px(dotRule && val(dotRule, 'height'))) &&
+    `calc uses ${ctlCalc[1]}px / ${ctlCalc[2]}px but the arrow is ${arrowBase && val(arrowBase, 'height')} and the dot ${dotRule && val(dotRule, 'height')}`,
+  strayCtlMargins.length && 'another margin on .blog-controls would un-centre the dots',
+  mouseSpace !== conMB['(base)'] && `mouse --controls-space ${mouseSpace ?? '(unset)'} must equal .form-consent margin-bottom ${conMB['(base)']}`,
+  !(px(touchSpace) - boxSlack >= 24) && `touch --controls-space ${touchSpace ?? '(unset)'} leaves ${(px(touchSpace) - boxSlack) || 0}px dead zone (needs >= 24px)`,
+  !(hasCtl && val(hasCtl, 'margin-bottom') === '0') && 'the carousel must drop its margin-bottom to 0 while the controls show',
+].filter(Boolean);
+check('carousel-controls-spacing', !spacingIssues.length, spacingIssues.join('; '));
+
+// Tabbing to an off-screen card slides it into view, and the browser's focus-scroll of the clipped carousel is undone
+check('carousel-focus-follows', /addEventListener\('focusin'/.test(indexHTML) && indexHTML.includes('carousel.scrollLeft = 0'),
+  'keep the focusin slide-into-view handler and the scrollLeft reset');
 
 /* ---------- report ---------- */
 const gh = process.env.GITHUB_ACTIONS === 'true';

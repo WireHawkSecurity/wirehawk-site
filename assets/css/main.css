@@ -23,6 +23,11 @@
   --dim: #7E7E7E;
   --red: #C0392B;
   --red-rgb: 192, 57, 43; /* --red as RGB channels, the single source for rgba() tints (mirrors the blog's --wh-red-rgb) */
+  /* Interaction tone: same hue, lighter step -- the red for anything that
+     responds to the user (hover / focus / press). Foreground only: 4.91:1+ on
+     every surface, but white text on it is only 3.82:1, so never a background. */
+  --red-bright: #E74C3C;
+  --red-bright-rgb: 231, 76, 60;
   --border: rgba(255,255,255,0.20);
   --border-subtle: rgba(255,255,255,0.08);
   --font: 'Sora', system-ui, -apple-system, sans-serif;
@@ -62,9 +67,9 @@ a {
 }
 
 @media (hover: hover) {
-  a:hover { color: var(--red); }
+  a:hover { color: var(--red-bright); }
 }
-a:active { color: var(--red); }
+a:active { color: var(--red-bright); }
 
 /* --- Accessibility --- */
 .sr-only {
@@ -101,7 +106,7 @@ a:active { color: var(--red); }
 /* Keyboard focus — visible on dark backgrounds, using the same red as hover.
    The outline follows each element's own border-radius automatically. */
 :focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--red-bright);
   outline-offset: 3px;
 }
 
@@ -109,11 +114,11 @@ a:active { color: var(--red); }
 .header-nav a:focus-visible,
 .mobile-nav a:focus-visible,
 .social-icons a:focus-visible {
-  color: var(--red);
+  color: var(--red-bright);
 }
 
 .header-logo:focus-visible .header-logo-text {
-  color: var(--red);
+  color: var(--red-bright);
 }
 
 /* Text fields keep their dedicated red border + ring rather than an outline;
@@ -179,11 +184,11 @@ section[tabindex="-1"]:focus {
 
 @media (hover: hover) {
   .header-logo:hover .header-logo-text {
-    color: var(--red);
+    color: var(--red-bright);
   }
 }
 .header-logo:active .header-logo-text {
-  color: var(--red);
+  color: var(--red-bright);
 }
 
 .header-nav {
@@ -200,9 +205,9 @@ section[tabindex="-1"]:focus {
 }
 
 @media (hover: hover) {
-  .header-nav a:hover { color: var(--red); }
+  .header-nav a:hover { color: var(--red-bright); }
 }
-.header-nav a:active { color: var(--red); }
+.header-nav a:active { color: var(--red-bright); }
 
 .header-nav .nav-cta {
   color: #e8e8e8;
@@ -210,20 +215,23 @@ section[tabindex="-1"]:focus {
   padding: 6px 20px;
   border-radius: 5px;
   font-weight: 500;
-  transition: color .2s ease;
+  transition: color .2s ease, border-color .2s ease;
 }
 
 .header-nav .nav-cta:focus-visible {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 @media (hover: hover) {
   .header-nav .nav-cta:hover {
-    color: var(--red);
+    color: var(--red-bright);
+    border-color: var(--red-bright);
   }
 }
 .header-nav .nav-cta:active {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 /* --- Mobile Menu --- */
@@ -305,9 +313,9 @@ section[tabindex="-1"]:focus {
 }
 
 @media (hover: hover) {
-  .mobile-nav a:hover { color: var(--red); }
+  .mobile-nav a:hover { color: var(--red-bright); }
 }
-.mobile-nav a:active { color: var(--red); }
+.mobile-nav a:active { color: var(--red-bright); }
 
 /* Contact Us carries the same outlined-CTA treatment as the desktop header nav
    so the primary action stands out from the plain nav links. Text stays at the
@@ -319,20 +327,23 @@ section[tabindex="-1"]:focus {
   padding: 12px 32px;
   line-height: 1.2;
   color: #e8e8e8;
-  transition: color .2s ease;
+  transition: color .2s ease, border-color .2s ease;
 }
 
 .mobile-nav a[href="#contact"]:focus-visible {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 @media (hover: hover) {
   .mobile-nav a[href="#contact"]:hover {
-    color: var(--red);
+    color: var(--red-bright);
+    border-color: var(--red-bright);
   }
 }
 .mobile-nav a[href="#contact"]:active {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 .mobile-nav-socials { margin-top: 8px; }
@@ -375,9 +386,9 @@ body.mobile-nav-open .mobile-menu-toggle span:nth-child(3) {
 }
 
 @media (hover: hover) {
-  .social-icons a:hover { color: var(--red); }
+  .social-icons a:hover { color: var(--red-bright); }
 }
-.social-icons a:active { color: var(--red); }
+.social-icons a:active { color: var(--red-bright); }
 
 /* --- Hero --- */
 /* [CHANGE 4] Larger bottom gap entering content sections */
@@ -670,6 +681,9 @@ section h2 {
   position: relative;
   overflow: hidden;
   margin-bottom: 24px;
+  /* Visible space above and below the dot row (see .blog-controls). Mouse:
+     24px, the same gap Submit has above it. Touch: (pointer: coarse) below. */
+  --controls-space: 24px;
 }
 
 .blog-track {
@@ -740,13 +754,43 @@ section h2 {
   overflow: hidden;
 }
 
+/* Controls row under the cards: prev arrow, dots, next arrow. The 40px arrow
+   boxes set the row height and the 9px dots run through its middle, so the box
+   has (40 - 9) / 2 = 15.5px of empty space above and below the dots. The
+   margin subtracts it: --controls-space is the gap you see above and below the
+   dots, which keeps them centred between the cards and View Our Blog. The
+   bottom margin stays inside the carousel (overflow: hidden) so the arrows'
+   focus outline isn't clipped. */
+.blog-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-block: calc(var(--controls-space) - (40px - 9px) / 2);
+}
+
+.blog-controls[hidden] { display: none; }
+
+/* The controls' bottom margin now spaces the button, so the carousel drops its
+   own. With no controls (every post fits) it keeps its 24px. */
+.blog-carousel:has(> .blog-controls:not([hidden])) {
+  margin-bottom: 0;
+}
+
+/* Touch screens: 40px leaves 24.5px of dead space between the arrows' 40px tap
+   boxes and both the cards and the button, so a slightly-off tap can't open a
+   post or the blog. Keyed to the input, not the width, so a tablet in
+   landscape gets it too. */
+@media (pointer: coarse) {
+  .blog-carousel { --controls-space: 40px; }
+}
+
 /* Dot + gap = 24px centre-to-centre so each dot's 24x24 tap area (::after)
    sits flush against its neighbours without overlapping (WCAG 2.5.8). */
 .blog-dots {
   display: flex;
   justify-content: center;
   gap: 15px;
-  padding: 16px 0 4px;
 }
 
 .blog-dot {
@@ -765,13 +809,13 @@ section h2 {
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Invisible 24x24 tap area. Offset upward (11.5px above, 3.5px below) so it
-   stays inside the carousel's overflow:hidden box -- the dots row has only 4px
-   of padding below the dot, and anything past that would be clipped. */
+/* Invisible 24x24 tap area, centred on the dot. The 40px-tall controls row
+   leaves 15.5px above and below each dot, so it stays inside the carousel's
+   overflow:hidden box. */
 .blog-dot::after {
   content: "";
   position: absolute;
-  inset: -11.5px -7.5px -3.5px;
+  inset: -7.5px;
 }
 
 @media (hover: hover) {
@@ -783,6 +827,45 @@ section h2 {
 .blog-dot.active {
   background: var(--red);
   box-shadow: none;
+}
+
+/* Prev / next arrows: icon-only, muted at rest, red on hover / focus / press
+   like every other link. The 40x40 box is the tap target. */
+.blog-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .2s ease, opacity .2s ease;
+}
+
+.blog-arrow:focus-visible {
+  color: var(--red-bright);
+}
+
+@media (hover: hover) {
+  .blog-arrow:hover {
+    color: var(--red-bright);
+  }
+}
+
+.blog-arrow:active {
+  color: var(--red-bright);
+}
+
+/* At either end: dimmed and inert, but still focusable (aria-disabled) so
+   keyboard focus isn't dropped. Must come after the state rules above. */
+.blog-arrow[aria-disabled="true"] {
+  color: var(--muted);
+  opacity: 0.3;
+  cursor: default;
 }
 
 .blog-loading,
@@ -807,20 +890,23 @@ section h2 {
   border: 1px solid var(--red);
   padding: 11px 30px;
   border-radius: 5px;
-  transition: color .2s ease;
+  transition: color .2s ease, border-color .2s ease;
 }
 
 .btn-ghost:focus-visible {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 @media (hover: hover) {
   .btn-ghost:hover {
-    color: var(--red);
+    color: var(--red-bright);
+    border-color: var(--red-bright);
   }
 }
 .btn-ghost:active {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 /* --- Contact --- */
@@ -874,8 +960,8 @@ section h2 {
 .contact-form input[type=text]:focus,
 .contact-form input[type=email]:focus,
 .contact-form textarea:focus {
-  border-color: var(--red);
-  box-shadow: 0 0 8px rgba(var(--red-rgb), 0.2);
+  border-color: var(--red-bright);
+  box-shadow: 0 0 8px rgba(var(--red-bright-rgb), 0.2);
 }
 
 .contact-form textarea {
@@ -920,20 +1006,23 @@ section h2 {
   border-radius: 5px;
   padding: 11px 28px;
   cursor: pointer;
-  transition: color .2s ease;
+  transition: color .2s ease, border-color .2s ease;
 }
 
 .btn-submit:focus-visible {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 @media (hover: hover) {
   .btn-submit:hover {
-    color: var(--red);
+    color: var(--red-bright);
+    border-color: var(--red-bright);
   }
 }
 .btn-submit:active:not(:disabled) {
-  color: var(--red);
+  color: var(--red-bright);
+  border-color: var(--red-bright);
 }
 
 .btn-submit:disabled {

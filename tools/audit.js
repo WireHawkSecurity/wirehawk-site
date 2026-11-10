@@ -1,9 +1,10 @@
 /* ============================================================
    WireHawk Security — one-pass page audit
    Run inside the rendered page (Chrome MCP javascript_tool, DevTools console,
-   or headless Chrome) at each test width: 2560 (desktop, 100% scaling),
-   900 (tablet), 393 (iPhone 16 Pro). Returns one object; `flags` lists anything
-   that breaks a project rule or WCAG threshold. Read-only: changes nothing.
+   or headless Chrome) at each test width: 2048 (Jordan's desktop: 2560x1440 at
+   125% Windows scaling), 2560 (same monitor at 100%), 900 (tablet), 393
+   (iPhone 16 Pro). Returns one object; `flags` lists anything that breaks a
+   project rule or WCAG threshold. Read-only: changes nothing.
    Not published (Hugo ignores tools/).
    ============================================================ */
 (() => {
@@ -47,7 +48,7 @@
 
   /* layout */
   const root = getComputedStyle(document.documentElement);
-  const tokens = Object.fromEntries(['--gap', '--pad', '--header-h', '--content-w', '--dim', '--muted', '--red']
+  const tokens = Object.fromEntries(['--gap', '--pad', '--header-h', '--content-w', '--dim', '--muted', '--red', '--red-bright']
     .map(t => [t, root.getPropertyValue(t).trim()]));
   const overflowX = document.documentElement.scrollWidth > document.documentElement.clientWidth;
   if (overflowX) flags.push('horizontal overflow');
@@ -56,8 +57,26 @@
   const cards = $$('.services-intro, .services-grid, .section-card').filter(c => !c.closest('.contact'));
   const cardWidths = [...new Set(cards.map(c => r1(rect(c).width)))];
   if (cardWidths.length !== 1) flags.push(`content widths differ: ${cardWidths.join(', ')}`);
-  const rhythm = { blogCarousel: css($('.blog-carousel'), 'margin-bottom'), formConsent: css($('.form-consent'), 'margin-bottom') };
-  if ($('.form-consent') && rhythm.blogCarousel !== rhythm.formConsent) flags.push('CTA rhythm margins out of sync');
+  /* CTA rhythm + carousel controls: measured as visible gaps, not margins. The dots sit centred between the
+     cards and View Our Blog. With a mouse, the gap above View Our Blog equals the gap above Submit; on touch
+     (pointer: coarse) the arrows' tap boxes keep >= 24px of dead space from the cards and the button. */
+  const coarse = matchMedia('(pointer: coarse)').matches, blogBtn = $('.blog-cta .btn-ghost'), ctl = $('.blog-controls');
+  const ctlShown = !!ctl && !ctl.hidden && css(ctl, 'display') !== 'none' && !!$('.blog-card');
+  const submitGap = $('.form-consent label') && $('.btn-submit') ? r1(rect($('.btn-submit')).top - rect($('.form-consent label')).bottom) : null;
+  const rhythm = { pointer: coarse ? 'coarse' : 'fine', controlsShown: ctlShown, submitGap };
+  if (ctlShown && blogBtn) {
+    const card = rect($('.blog-card')), dot = rect($('.blog-dot')), arrow = rect($('.blog-arrow')), btn = rect(blogBtn);
+    Object.assign(rhythm, { cardsToDots: r1(dot.top - card.bottom), dotsToButton: r1(btn.top - dot.bottom),
+      arrowDeadZoneAbove: r1(arrow.top - card.bottom), arrowDeadZoneBelow: r1(btn.top - arrow.bottom),
+      arrowRoomInsideCarousel: r1(rect($('.blog-carousel')).bottom - arrow.bottom) });
+    if (Math.abs(rhythm.cardsToDots - rhythm.dotsToButton) > 1) flags.push(`carousel dots not centred: ${rhythm.cardsToDots}px above vs ${rhythm.dotsToButton}px below`);
+    if (!coarse && submitGap !== null && Math.abs(rhythm.dotsToButton - submitGap) > 1) flags.push(`CTA rhythm: ${rhythm.dotsToButton}px above View Our Blog vs ${submitGap}px above Submit`);
+    if (coarse && Math.min(rhythm.arrowDeadZoneAbove, rhythm.arrowDeadZoneBelow) < 24) flags.push(`touch: carousel arrows within ${Math.min(rhythm.arrowDeadZoneAbove, rhythm.arrowDeadZoneBelow)}px of the cards / button (needs 24px)`);
+    if (rhythm.arrowRoomInsideCarousel < 5) flags.push('carousel arrows sit on the clip edge: their focus outline gets cut off');
+  } else if (blogBtn && $('.blog-carousel')) {
+    rhythm.carouselToButton = r1(rect(blogBtn).top - rect($('.blog-carousel')).bottom);
+    if (submitGap !== null && Math.abs(rhythm.carouselToButton - submitGap) > 1) flags.push(`CTA rhythm: ${rhythm.carouselToButton}px above View Our Blog vs ${submitGap}px above Submit`);
+  }
 
   /* text contrast on representative elements */
   const SAMPLES = { heroProps: '.hero-props p', navLink: '.header-nav a:not(.nav-cta)', serviceItem: '.service-column li',
@@ -93,17 +112,17 @@
     return res;
   };
   const tapTargets = { footerSocial: targets('.site-footer .social-icons a'), carouselDots: targets('.blog-dot'),
+    carouselArrows: targets('.blog-arrow'),
     menuSocial: targets('.mobile-nav .social-icons a') };
 
-  /* hover / focus / press text colour (brand --red, shared with the blog) on each surface it appears on.
-     Below 4.5:1 is a known, accepted Open Item — reported under `known`, not `flags`. */
+  /* interaction red (hover / focus / press foreground) on each surface it appears on */
   const hexRGB = h => { h = h.replace('#', ''); if (h.length === 3) h = [...h].map(c => c + c).join(''); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
   const rgbRatio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return Math.round((x + 0.05) / (y + 0.05) * 100) / 100; };
-  const known = [];
-  const stateRed = tokens['--red'] ? Object.fromEntries(
+  const interactionRed = tokens['--red-bright'] || tokens['--red'];
+  const stateRed = interactionRed ? Object.fromEntries(
     [['header', $('.site-header')], ['card', $('.contact .section-card')], ['page', document.body]]
-      .filter(([, el]) => el).map(([k, el]) => [k, rgbRatio(hexRGB(tokens['--red']), bgOf(el))])) : null;
-  if (stateRed) for (const [k, v] of Object.entries(stateRed)) if (v < 4.5) known.push(`hover/focus red on ${k}: ${v}:1 (accepted, matches blog)`);
+      .filter(([, el]) => el).map(([k, el]) => [k, rgbRatio(hexRGB(interactionRed), bgOf(el))])) : null;
+  if (stateRed) for (const [k, v] of Object.entries(stateRed)) if (v < 4.5) flags.push(`interaction red on ${k}: ${v}:1 < 4.5:1`);
 
   /* carousel dots: inactive ring contrast against the card (WCAG 1.4.11) */
   const idleDot = $$('.blog-dot').find(d => !d.classList.contains('active'));
@@ -137,7 +156,6 @@
     menu: { shown: navShown, open: menuOpen, closedMenuTabStops },
     carousel: $('.blog-card') ? `${$$('.blog-card').length} cards` : ($('#blog-carousel') || {}).innerText,
     unloadedImages,
-    known,
     flags,
   };
 })();
