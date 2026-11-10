@@ -1,0 +1,2 @@
+# Keep the internal check/audit scripts out of GitHub's Languages bar (the site is HTML + CSS).
+tools/** linguist-detectable=false
