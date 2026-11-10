@@ -78,7 +78,7 @@
     if (submitGap !== null && Math.abs(rhythm.carouselToButton - submitGap) > 1) flags.push(`CTA rhythm: ${rhythm.carouselToButton}px above View Our Blog vs ${submitGap}px above Submit`);
   }
 
-  /* About logo (desktop, side by side): the visible artwork (x=127..872, y=229..851 of the 1024px PNG) should
+  /* About logo (desktop, side by side): the visible artwork (x=139..884, y=170..835 of the 1024px PNG) should
      span the text from the first line's capitals to the last baseline, centred on it, flush with the content's
      right edge. Where the text runs taller (narrow desktops) the logo stays centred on it. */
   let aboutLogo = null;
@@ -86,7 +86,7 @@
   if (aImg && aPs.length && css(aImg, 'position') === 'absolute' && aImg.naturalWidth) {
     const ib = rect(aImg), s = Math.min(ib.width / aImg.naturalWidth, ib.height / aImg.naturalHeight);
     const ox = ib.left + (ib.width - aImg.naturalWidth * s) / 2, oy = ib.top + (ib.height - aImg.naturalHeight * s) / 2;
-    const art = { top: oy + 229 * s, bottom: oy + 852 * s, right: ox + 873 * s };
+    const art = { top: oy + 170 * s, bottom: oy + 836 * s, right: ox + 885 * s };
     const ctx = document.createElement('canvas').getContext('2d'), fs = parseFloat(css(aPs[0], 'font-size'));
     ctx.font = `400 ${fs}px Sora`; const m = ctx.measureText('W'), em = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent;
     const lineRect = (p, last) => { const rg = document.createRange(); rg.selectNodeContents(p); const rs = [...rg.getClientRects()].filter(r => r.width > 1); return last ? rs[rs.length - 1] : rs[0]; };

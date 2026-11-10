@@ -631,34 +631,34 @@ section h2 {
 
 /* Logo — absolutely positioned so it can be sized to the text without
    affecting the heading gap. The PNG is opaque with a wide black margin
-   (artwork at x=127..872, y=229..851 of 1024) that mix-blend-mode: lighten
+   (artwork at x=139..884, y=170..835 of 1024) that mix-blend-mode: lighten
    hides, so the box is sized for the artwork, not the frame:
-   - 330px box: the artwork renders 240 x 200px, the height of the text from
+   - 309px box: the artwork renders 225 x 201px, the height of the text from
      the first line's capitals to the last line's baseline.
-   - Column = 240px (the artwork's width), so the gutter to the text is the
+   - Column = 225px (the artwork's width), so the gutter to the text is the
      48px flex gap. max-width: none lets the box outgrow the column (the
-     global img max-width would cap it at 240px and shrink the logo).
-   - right: -49px pushes the PNG's right margin into the card padding, so the
+     global img max-width would cap it at 225px and shrink the logo).
+   - right: -42px pushes the PNG's right margin into the card padding, so the
      artwork's right edge sits on the content edge, mirroring the text's left.
-   - top: 50% - 10.4px offsets the artwork's below-centre position in the PNG
-     (and the text's half-leading): the hawk's head lines up with the first
-     line's capitals and SECURITY sits on the last baseline.
+   - top: 50% + 1.3px offsets the artwork's slightly-above-centre position in
+     the PNG (and the text's half-leading): the hawk's crest lines up with the
+     first line's capitals and SECURITY sits on the last baseline.
    These track the PNG's artwork bounds and the 16px / 1.8 body text; revisit
    if either changes. */
 .about-logo {
   flex-shrink: 0;
   order: 1;
   position: relative;
-  width: 240px;
+  width: 225px;
 }
 
 .about-logo img {
   position: absolute;
-  top: calc(50% - 10.4px);
-  right: -49px;
+  top: calc(50% + 1.3px);
+  right: -42px;
   transform: translateY(-50%);
-  width: 330px;
-  height: 330px;
+  width: 309px;
+  height: 309px;
   max-width: none;
   mix-blend-mode: lighten;
   object-fit: contain;
@@ -1285,19 +1285,21 @@ section h2 {
 
   /* Scale the logo up to span the text column above it on phones (the 200px
      tablet size reads small next to the full-width paragraph), then crop the
-     dead space. The artwork sits at roughly y=229..851 of the 1024px-tall PNG,
-     leaving ~22% black margin above the hawk and ~17% below the wordmark. At
-     full width those margins scaled up to ~70px / ~53px of empty vertical gap;
-     a 210px box with object-fit: cover trims them to an even ~10px, framing the
-     hawk+wordmark tightly without clipping. The 59% object-position offsets the
-     artwork's below-center vertical position so the top/bottom margins match.
-     (The height and object-position track the PNG's artwork bounds -- revisit
-     both if the logo asset is ever re-cropped or replaced.) */
+     dead space. The artwork sits at y=170..835 of the 1024px-tall PNG,
+     leaving ~17% black margin above the hawk and ~18% below the wordmark. At
+     full width those margins scale up to ~52px / ~57px of empty vertical gap;
+     a 7:5 box with object-fit: cover trims them to an even ~3% of the width
+     (~10px at 393), framing the hawk+wordmark tightly without clipping. The
+     box scales with the column (a fixed height clipped the artwork on wider
+     phones), and the 47% object-position balances the top/bottom margins.
+     (The aspect-ratio and object-position track the PNG's artwork bounds --
+     revisit both if the logo asset is ever re-cropped or replaced.) */
   .about-logo img {
     width: 100%;
-    height: 210px;
+    height: auto;
+    aspect-ratio: 7 / 5;
     object-fit: cover;
-    object-position: center 59%;
+    object-position: center 47%;
   }
 
   .btn-submit { max-width: 100%; }
