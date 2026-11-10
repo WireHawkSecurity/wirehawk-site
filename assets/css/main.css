@@ -777,12 +777,12 @@ section h2 {
   margin-bottom: 0;
 }
 
-/* Touch screens: 40px leaves 24.5px of dead space between the arrows' 40px tap
+/* Touch screens: 32px leaves 16.5px of dead space between the arrows' 40px tap
    boxes and both the cards and the button, so a slightly-off tap can't open a
    post or the blog. Keyed to the input, not the width, so a tablet in
    landscape gets it too. */
 @media (pointer: coarse) {
-  .blog-carousel { --controls-space: 40px; }
+  .blog-carousel { --controls-space: 32px; }
 }
 
 /* Dot + gap = 24px centre-to-centre so each dot's 24x24 tap area (::after)

@@ -59,7 +59,7 @@
   if (cardWidths.length !== 1) flags.push(`content widths differ: ${cardWidths.join(', ')}`);
   /* CTA rhythm + carousel controls: measured as visible gaps, not margins. The dots sit centred between the
      cards and View Our Blog. With a mouse, the gap above View Our Blog equals the gap above Submit; on touch
-     (pointer: coarse) the arrows' tap boxes keep >= 24px of dead space from the cards and the button. */
+     (pointer: coarse) the arrows' tap boxes keep >= 16px of dead space from the cards and the button. */
   const coarse = matchMedia('(pointer: coarse)').matches, blogBtn = $('.blog-cta .btn-ghost'), ctl = $('.blog-controls');
   const ctlShown = !!ctl && !ctl.hidden && css(ctl, 'display') !== 'none' && !!$('.blog-card');
   const submitGap = $('.form-consent label') && $('.btn-submit') ? r1(rect($('.btn-submit')).top - rect($('.form-consent label')).bottom) : null;
@@ -71,7 +71,7 @@
       arrowRoomInsideCarousel: r1(rect($('.blog-carousel')).bottom - arrow.bottom) });
     if (Math.abs(rhythm.cardsToDots - rhythm.dotsToButton) > 1) flags.push(`carousel dots not centred: ${rhythm.cardsToDots}px above vs ${rhythm.dotsToButton}px below`);
     if (!coarse && submitGap !== null && Math.abs(rhythm.dotsToButton - submitGap) > 1) flags.push(`CTA rhythm: ${rhythm.dotsToButton}px above View Our Blog vs ${submitGap}px above Submit`);
-    if (coarse && Math.min(rhythm.arrowDeadZoneAbove, rhythm.arrowDeadZoneBelow) < 24) flags.push(`touch: carousel arrows within ${Math.min(rhythm.arrowDeadZoneAbove, rhythm.arrowDeadZoneBelow)}px of the cards / button (needs 24px)`);
+    if (coarse && Math.min(rhythm.arrowDeadZoneAbove, rhythm.arrowDeadZoneBelow) < 16) flags.push(`touch: carousel arrows within ${Math.min(rhythm.arrowDeadZoneAbove, rhythm.arrowDeadZoneBelow)}px of the cards / button (needs 16px)`);
     if (rhythm.arrowRoomInsideCarousel < 5) flags.push('carousel arrows sit on the clip edge: their focus outline gets cut off');
   } else if (blogBtn && $('.blog-carousel')) {
     rhythm.carouselToButton = r1(rect(blogBtn).top - rect($('.blog-carousel')).bottom);

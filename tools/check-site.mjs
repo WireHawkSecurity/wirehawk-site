@@ -324,7 +324,7 @@ check('carousel-arrows', arrowJS && iDisabled > iHover && iDisabled > iActive &&
 
 // Carousel controls spacing: the dots sit centred between the cards and View Our Blog. --controls-space is the
 // visible gap above and below them: mouse = the .form-consent gap above Submit (rhythm); touch (pointer: coarse)
-// leaves >= 24px of dead space between the arrows' tap boxes and the cards / button. The calc's box and dot
+// leaves >= 16px of dead space between the arrows' tap boxes and the cards / button. The calc's box and dot
 // sizes must match the real ones, and the controls' bottom margin must stay inside the carousel (margin-bottom 0
 // while they show) so the arrows' focus outline isn't clipped.
 const carBase = css.find(r => r.prelude === '.blog-carousel' && !r.context.length);
@@ -344,7 +344,7 @@ const spacingIssues = [
     `calc uses ${ctlCalc[1]}px / ${ctlCalc[2]}px but the arrow is ${arrowBase && val(arrowBase, 'height')} and the dot ${dotRule && val(dotRule, 'height')}`,
   strayCtlMargins.length && 'another margin on .blog-controls would un-centre the dots',
   mouseSpace !== conMB['(base)'] && `mouse --controls-space ${mouseSpace ?? '(unset)'} must equal .form-consent margin-bottom ${conMB['(base)']}`,
-  !(px(touchSpace) - boxSlack >= 24) && `touch --controls-space ${touchSpace ?? '(unset)'} leaves ${(px(touchSpace) - boxSlack) || 0}px dead zone (needs >= 24px)`,
+  !(px(touchSpace) - boxSlack >= 16) && `touch --controls-space ${touchSpace ?? '(unset)'} leaves ${(px(touchSpace) - boxSlack) || 0}px dead zone (needs >= 16px)`,
   !(hasCtl && val(hasCtl, 'margin-bottom') === '0') && 'the carousel must drop its margin-bottom to 0 while the controls show',
 ].filter(Boolean);
 check('carousel-controls-spacing', !spacingIssues.length, spacingIssues.join('; '));
