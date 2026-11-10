@@ -22,6 +22,7 @@
   --muted: #999;
   --dim: #7E7E7E;
   --red: #C0392B;
+  --red-rgb: 192, 57, 43; /* --red as RGB channels, the single source for rgba() tints (mirrors the blog's --wh-red-rgb) */
   --border: rgba(255,255,255,0.20);
   --border-subtle: rgba(255,255,255,0.08);
   --font: 'Sora', system-ui, -apple-system, sans-serif;
@@ -115,11 +116,16 @@ a:active { color: var(--red); }
   color: var(--red);
 }
 
-/* Form fields keep their dedicated red border + ring rather than an outline;
-   #main is a skip-link landing spot, not an interactive control. */
-.contact-form input:focus-visible,
+/* Text fields keep their dedicated red border + ring rather than an outline;
+   #main and sections are landing spots for in-page links (focused by script so
+   the next Tab continues from there), not interactive controls. Scoped to the
+   text inputs on purpose: the consent checkbox has no visible border to turn red,
+   so it keeps the global red outline as its keyboard focus indicator. */
+.contact-form input[type=text]:focus-visible,
+.contact-form input[type=email]:focus-visible,
 .contact-form textarea:focus-visible,
-#main:focus {
+#main:focus,
+section[tabindex="-1"]:focus {
   outline: none;
 }
 
@@ -265,7 +271,12 @@ a:active { color: var(--red); }
   gap: 28px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s;
+  /* visibility (not just opacity) takes the closed menu's links out of the
+     keyboard tab order and the accessibility tree. On close it flips to hidden
+     only after the .3s fade finishes, so the fade still plays. visibility does
+     not create a containing block, so the fixed ::before scrim is unaffected. */
+  visibility: hidden;
+  transition: opacity .3s, visibility 0s linear .3s;
 }
 
 /* Full-viewport dim behind the sheet. Fixed to the viewport (the nav sets no
@@ -334,6 +345,8 @@ a:active { color: var(--red); }
 body.mobile-nav-open .mobile-nav {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
+  transition: opacity .3s, visibility 0s; /* visible immediately on open */
 }
 
 body.mobile-nav-open .mobile-menu-toggle span:nth-child(1) {
@@ -442,7 +455,7 @@ section h2 {
   margin: 0 auto;
   background: var(--card);
   border: 1px solid var(--border);
-  border-top: 2px solid rgba(192, 57, 43, 0.25);
+  border-top: 2px solid rgba(var(--red-rgb), 0.25);
   border-radius: var(--radius);
   padding: 40px 48px;
 }
@@ -458,7 +471,7 @@ section h2 {
   margin: 0 auto 12px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-top: 2px solid rgba(192, 57, 43, 0.25);
+  border-top: 2px solid rgba(var(--red-rgb), 0.25);
   border-radius: var(--radius);
   padding: 28px 40px 24px;
   text-align: center;
@@ -560,14 +573,16 @@ section h2 {
   font-size: 14px;
   font-weight: 600;
   color: var(--dim);
-  padding-top: 1px;
+  padding-top: 4px; /* centres the counter on the 19px label beside it */
 }
 
+/* 19px bold = WCAG "large text", so the brand red (3.86:1 on black) passes at
+   the 3:1 large-text threshold. Below this size or weight it fails (needs 4.5:1). */
 .deliverable-label {
   grid-column: 2;
   grid-row: 1;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 19px;
+  font-weight: 700;
   color: var(--red);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -725,32 +740,49 @@ section h2 {
   overflow: hidden;
 }
 
+/* Dot + gap = 24px centre-to-centre so each dot's 24x24 tap area (::after)
+   sits flush against its neighbours without overlapping (WCAG 2.5.8). */
 .blog-dots {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   padding: 16px 0 4px;
 }
 
 .blog-dot {
+  position: relative;
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  /* Inactive = hollow ring (4.5:1 against the card); active = solid red. The
+     fill difference, not colour alone, marks the current slide (WCAG 1.4.1),
+     and the ring clears the 3:1 non-text contrast floor (WCAG 1.4.11). */
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.45);
   border: none;
   padding: 0;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Invisible 24x24 tap area. Offset upward (11.5px above, 3.5px below) so it
+   stays inside the carousel's overflow:hidden box -- the dots row has only 4px
+   of padding below the dot, and anything past that would be clipped. */
+.blog-dot::after {
+  content: "";
+  position: absolute;
+  inset: -11.5px -7.5px -3.5px;
 }
 
 @media (hover: hover) {
   .blog-dot:hover {
-    background: rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.75);
   }
 }
 
 .blog-dot.active {
   background: var(--red);
+  box-shadow: none;
 }
 
 .blog-loading,
@@ -837,10 +869,13 @@ section h2 {
   color: var(--dim);
 }
 
-.contact-form input:focus,
+/* Same scope as the field styling above: the ring belongs to the text fields
+   only (the checkbox uses the global outline instead). */
+.contact-form input[type=text]:focus,
+.contact-form input[type=email]:focus,
 .contact-form textarea:focus {
   border-color: var(--red);
-  box-shadow: 0 0 8px rgba(192, 57, 43, 0.2);
+  box-shadow: 0 0 8px rgba(var(--red-rgb), 0.2);
 }
 
 .contact-form textarea {

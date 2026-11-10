@@ -291,9 +291,12 @@
         var top = (href === '#top') ? 0
                   : target.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: top, behavior: reduceMotion ? 'auto' : 'smooth' });
-        /* Move focus to the target if it can receive it (e.g. the skip link's #main),
-           so keyboard users land in the content instead of staying on the link */
-        if (target.hasAttribute('tabindex')) {
+        /* Hand keyboard focus to the target so the next Tab continues from there,
+           not from the link (which may sit in the now-hidden mobile menu).
+           Sections get tabindex="-1" on demand: focusable by script only, never a
+           tab stop. #top is skipped: the logo link already sits at the top. */
+        if (href !== '#top') {
+          if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
           target.focus({ preventScroll: true });
         }
         /* Close mobile nav if open */
@@ -325,7 +328,7 @@
   var FEED_URL = {{ .Site.Params.blogRSS | jsonify | safeJS }};
   var MAX_POSTS = 5;
   var GAP = 16;
-  var AUTO_DELAY = 5000;
+  /* No auto-rotate (WCAG 2.2.2): visitors advance with the dots or by swiping. */
 
   function escapeHTML(str) {
     var div = document.createElement('div');
@@ -382,7 +385,7 @@
     dotsWrap.className = 'blog-dots';
     carousel.appendChild(dotsWrap);
 
-    var current = 0, visible, positions, cardW, timer = null;
+    var current = 0, visible, positions, cardW;
 
     function measure() {
       var w = carousel.offsetWidth;
@@ -402,7 +405,6 @@
           dot.setAttribute('data-i', j);
           dot.addEventListener('click', function() {
             goTo(parseInt(this.getAttribute('data-i'), 10));
-            restartAuto();
           });
           dotsWrap.appendChild(dot);
         }
@@ -422,19 +424,10 @@
     }
 
     function goTo(pos) { slideTo(Math.max(0, Math.min(pos, positions - 1)), true); }
-    function next()    { goTo((current + 1) % positions); }
-
-    function startAuto()   { stopAuto(); if (positions > 1) timer = setInterval(next, AUTO_DELAY); }
-    function stopAuto()    { if (timer) { clearInterval(timer); timer = null; } }
-    function restartAuto() { stopAuto(); startAuto(); }
-
-    carousel.addEventListener('mouseenter', stopAuto);
-    carousel.addEventListener('mouseleave', startAuto);
 
     var tx = 0, td = 0, sw = false;
     carousel.addEventListener('touchstart', function(e) {
       tx = e.touches[0].clientX; td = 0; sw = true;
-      stopAuto();
       track.style.transition = 'none';
     }, { passive: true });
     carousel.addEventListener('touchmove', function(e) {
@@ -448,7 +441,6 @@
       if (td < -40 && current < positions - 1) goTo(current + 1);
       else if (td > 40 && current > 0) goTo(current - 1);
       else goTo(current);
-      startAuto();
     });
 
     var rt;
@@ -458,7 +450,6 @@
     });
 
     measure();
-    startAuto();
   }
 
   fetch(FEED_URL)

@@ -6,6 +6,11 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      skip_checks:
+        description: "Skip rule checks (false alarm only; fix the check afterward)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -37,6 +42,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      # Project rules (tools/check-site.mjs). A failure fails this job, so the
+      # deploy job never runs and the live site stays as it was.
+      - name: Rule checks
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.skip_checks }}
+        run: node tools/check-site.mjs
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
