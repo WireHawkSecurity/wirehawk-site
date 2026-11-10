@@ -349,6 +349,14 @@ const spacingIssues = [
 ].filter(Boolean);
 check('carousel-controls-spacing', !spacingIssues.length, spacingIssues.join('; '));
 
+// About logo: the box is sized for the artwork, not the PNG frame, so it's wider than its column. Without
+// max-width: none the global img { max-width: 100% } caps it at the column width and the logo shrinks.
+const aboutCol = css.find(r => r.prelude === '.about-logo' && !r.context.length);
+const aboutImg = css.find(r => r.prelude === '.about-logo img' && !r.context.length);
+check('about-logo-fit', !!aboutImg && !!aboutCol &&
+  (px(val(aboutImg, 'width')) <= px(val(aboutCol, 'width')) || val(aboutImg, 'max-width') === 'none'),
+  `.about-logo img (${aboutImg && val(aboutImg, 'width')}) is wider than its column (${aboutCol && val(aboutCol, 'width')}) and needs max-width: none`);
+
 // Tabbing to an off-screen card slides it into view, and the browser's focus-scroll of the clipped carousel is undone
 check('carousel-focus-follows', /addEventListener\('focusin'/.test(indexHTML) && indexHTML.includes('carousel.scrollLeft = 0'),
   'keep the focusin slide-into-view handler and the scrollLeft reset');

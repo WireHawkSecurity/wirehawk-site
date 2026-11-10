@@ -629,21 +629,37 @@ section h2 {
 
 /* About heading stays centered — consistent with all other section headings */
 
-/* Logo — absolutely positioned to center on text without affecting heading gap */
+/* Logo — absolutely positioned so it can be sized to the text without
+   affecting the heading gap. The PNG is opaque with a wide black margin
+   (artwork at x=127..872, y=229..851 of 1024) that mix-blend-mode: lighten
+   hides, so the box is sized for the artwork, not the frame:
+   - 330px box: the artwork renders 240 x 200px, the height of the text from
+     the first line's capitals to the last line's baseline.
+   - Column = 240px (the artwork's width), so the gutter to the text is the
+     48px flex gap. max-width: none lets the box outgrow the column (the
+     global img max-width would cap it at 240px and shrink the logo).
+   - right: -49px pushes the PNG's right margin into the card padding, so the
+     artwork's right edge sits on the content edge, mirroring the text's left.
+   - top: 50% - 10.4px offsets the artwork's below-centre position in the PNG
+     (and the text's half-leading): the hawk's head lines up with the first
+     line's capitals and SECURITY sits on the last baseline.
+   These track the PNG's artwork bounds and the 16px / 1.8 body text; revisit
+   if either changes. */
 .about-logo {
   flex-shrink: 0;
   order: 1;
   position: relative;
-  width: 280px;
+  width: 240px;
 }
 
 .about-logo img {
   position: absolute;
-  top: 45%;
-  left: 0;
+  top: calc(50% - 10.4px);
+  right: -49px;
   transform: translateY(-50%);
-  width: 280px;
-  height: 280px;
+  width: 330px;
+  height: 330px;
+  max-width: none;
   mix-blend-mode: lighten;
   object-fit: contain;
 }

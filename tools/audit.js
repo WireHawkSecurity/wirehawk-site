@@ -78,6 +78,29 @@
     if (submitGap !== null && Math.abs(rhythm.carouselToButton - submitGap) > 1) flags.push(`CTA rhythm: ${rhythm.carouselToButton}px above View Our Blog vs ${submitGap}px above Submit`);
   }
 
+  /* About logo (desktop, side by side): the visible artwork (x=127..872, y=229..851 of the 1024px PNG) should
+     span the text from the first line's capitals to the last baseline, centred on it, flush with the content's
+     right edge. Where the text runs taller (narrow desktops) the logo stays centred on it. */
+  let aboutLogo = null;
+  const aImg = $('.about-logo img'), aPs = $$('.about-text p');
+  if (aImg && aPs.length && css(aImg, 'position') === 'absolute' && aImg.naturalWidth) {
+    const ib = rect(aImg), s = Math.min(ib.width / aImg.naturalWidth, ib.height / aImg.naturalHeight);
+    const ox = ib.left + (ib.width - aImg.naturalWidth * s) / 2, oy = ib.top + (ib.height - aImg.naturalHeight * s) / 2;
+    const art = { top: oy + 229 * s, bottom: oy + 852 * s, right: ox + 873 * s };
+    const ctx = document.createElement('canvas').getContext('2d'), fs = parseFloat(css(aPs[0], 'font-size'));
+    ctx.font = `400 ${fs}px Sora`; const m = ctx.measureText('W'), em = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent;
+    const lineRect = (p, last) => { const rg = document.createRange(); rg.selectNodeContents(p); const rs = [...rg.getClientRects()].filter(r => r.width > 1); return last ? rs[rs.length - 1] : rs[0]; };
+    const f = lineRect(aPs[0], false), l = lineRect(aPs[aPs.length - 1], true);
+    const capTop = f.top + (f.height - em) / 2 + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
+    const baseline = l.top + (l.height - em) / 2 + m.fontBoundingBoxAscent;
+    const card = $('.about .section-card'), contentRight = rect(card).right - parseFloat(css(card, 'padding-right')) - parseFloat(css(card, 'border-right-width'));
+    aboutLogo = { artHeight: r1(art.bottom - art.top), textHeight: r1(baseline - capTop), topVsCaps: r1(art.top - capTop),
+      bottomVsBaseline: r1(art.bottom - baseline), rightVsContentEdge: r1(art.right - contentRight) };
+    if (aboutLogo.topVsCaps < -2 || aboutLogo.bottomVsBaseline > 2) flags.push(`About logo overshoots the text: ${aboutLogo.topVsCaps}px top / ${aboutLogo.bottomVsBaseline}px bottom`);
+    if (Math.abs(aboutLogo.topVsCaps + aboutLogo.bottomVsBaseline) > 3) flags.push(`About logo not centred on the text: ${aboutLogo.topVsCaps}px top vs ${aboutLogo.bottomVsBaseline}px bottom`);
+    if (Math.abs(aboutLogo.rightVsContentEdge) > 2) flags.push(`About logo is ${aboutLogo.rightVsContentEdge}px off the content's right edge`);
+  }
+
   /* text contrast on representative elements */
   const SAMPLES = { heroProps: '.hero-props p', navLink: '.header-nav a:not(.nav-cta)', serviceItem: '.service-column li',
     deliverableLabel: '.deliverable-label', deliverablesNote: '.deliverables-note', aboutText: '.about-text p',
@@ -152,7 +175,7 @@
     soraRendering, tokens, overflowX, h2Sizes, contentWidths: cardWidths,
     contactWidth: $('.contact .section-card') ? r1(rect($('.contact .section-card')).width) : null,
     header: { height: r1(rect($('.site-header')).height), background: css($('.site-header'), 'background-color') },
-    rhythm, textContrast, stateRed, tapTargets, dotRing,
+    rhythm, aboutLogo, textContrast, stateRed, tapTargets, dotRing,
     menu: { shown: navShown, open: menuOpen, closedMenuTabStops },
     carousel: $('.blog-card') ? `${$$('.blog-card').length} cards` : ($('#blog-carousel') || {}).innerText,
     unloadedImages,
