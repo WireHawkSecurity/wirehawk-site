@@ -30,7 +30,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.128.0          # bump as desired; extended edition required
+      HUGO_VERSION: 0.128.0          # pinned: use the same version locally; extended installed, not required
       HUGO_ENVIRONMENT: production   # gates the Cloudflare Analytics beacon to production (see baseof.html)
     steps:
       - name: Install Hugo CLI (extended)

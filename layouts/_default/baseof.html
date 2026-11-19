@@ -39,7 +39,8 @@
   <link rel="stylesheet" href="{{ $css.Permalink }}">
 
   <!-- Cloudflare Web Analytics — only injected on production builds
-       (HUGO_ENV=production), keeping localhost dev traffic out of the dashboard.
+       (plain `hugo` builds and CI; `hugo server` runs as development), keeping
+       localhost dev traffic out of the dashboard.
        Token is a public client-side identifier set in hugo.toml. -->
   {{ if eq (hugo.Environment) "production" }}
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ .Site.Params.cloudflareAnalytics }}"}'></script>

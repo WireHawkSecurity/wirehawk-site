@@ -1,6 +1,5 @@
 /* ============================================================
    WireHawk Security — Main Stylesheet
-   v3.0 — Visual rhythm refresh
    ============================================================ */
 
 /* --- Reset --- */
@@ -391,7 +390,7 @@ body.mobile-nav-open .mobile-menu-toggle span:nth-child(3) {
 .social-icons a:active { color: var(--red-bright); }
 
 /* --- Hero --- */
-/* [CHANGE 4] Larger bottom gap entering content sections */
+/* Larger bottom gap entering the content sections */
 .hero {
   padding: 120px var(--pad) calc(var(--gap) * 1.25);
   text-align: center;
@@ -476,7 +475,7 @@ section h2 {
   padding: 0 var(--pad) var(--gap);
 }
 
-/* [CHANGE 3] Tighter vertical padding — compact header card */
+/* Tighter vertical padding: a compact intro card */
 .services-intro {
   max-width: var(--content-w);
   margin: 0 auto 12px;
@@ -506,7 +505,7 @@ section h2 {
   padding: 40px 36px;
 }
 
-/* [CHANGE 6] Service category icons */
+/* Service category icons */
 .service-icon {
   display: flex;
   justify-content: center;
@@ -547,12 +546,13 @@ section h2 {
 }
 
 /* --- Deliverables --- */
-/* [CHANGE 4] Tighter bottom gap — closer link to About */
+/* Tighter bottom gap: ties Deliverables to About */
 .deliverables {
   padding: 0 var(--pad) calc(var(--gap) * 0.82);
 }
 
-/* [CHANGE 1] Unboxed — content on body background, no card container */
+/* Unboxed: content sits on the page background with no card chrome
+   (the only unboxed content section) */
 .deliverables .section-card {
   padding: 36px 48px;
   background: transparent;
@@ -565,7 +565,7 @@ section h2 {
   counter-reset: d;
 }
 
-/* [CHANGE 1 ripple] Divider opacity bumped for visibility on pure black */
+/* Dividers a step stronger than --border-subtle so they read on pure black */
 .deliverables-list li {
   counter-increment: d;
   display: grid;
@@ -607,7 +607,7 @@ section h2 {
   line-height: 1.7;
 }
 
-/* [CHANGE 1 ripple] Note border opacity bumped to match dividers */
+/* Note border matches the dividers */
 .deliverables-note {
   text-align: center;
   font-size: 13px;
@@ -684,7 +684,7 @@ section h2 {
 .about-text p:last-child { margin-bottom: 0; }
 
 /* --- Blog Carousel --- */
-/* [CHANGE 4] Larger bottom gap before Contact CTA */
+/* Larger bottom gap before Contact */
 .blog {
   padding: 0 var(--pad) calc(var(--gap) * 1.2);
 }
@@ -930,7 +930,8 @@ section h2 {
   padding: 0 var(--pad) var(--gap);
 }
 
-/* [CHANGE 2] Narrower card — reduces dead space without jarring step-down */
+/* Narrower card on desktop: less dead space around the form, without a
+   jarring step-down from the full content width */
 .contact .section-card {
   max-width: 900px;
   padding: 36px 40px;
@@ -1046,7 +1047,7 @@ section h2 {
   cursor: not-allowed;
 }
 
-/* Success state — replaces the form after a successful submit.
+/* Success state — replaces the form's fields after a successful submit.
    Elevated and constrained to the form's own 560px measure so it holds
    the same optical column the fields occupied; the now-redundant intro
    is hidden (:has) so the card reads cleanly heading -> confirmation.
@@ -1151,7 +1152,7 @@ section h2 {
     padding: 28px 24px;
   }
 
-  /* [CHANGE 2 ripple] Reset narrowing at tablet — desktop only */
+  /* Contact narrowing is desktop only: full width from here down */
   .contact .section-card {
     max-width: none;
   }
@@ -1278,7 +1279,7 @@ section h2 {
   .service-column h3 { font-size: 15px; border-bottom: none; }
   .service-column li { font-size: 14px; }
 
-  /* [CHANGE 6 ripple] Slightly smaller icons on mobile */
+  /* Slightly smaller icons on phones */
   .service-icon svg { width: 24px; height: 24px; }
 
   .about-text p { font-size: 15px; }

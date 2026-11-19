@@ -4,7 +4,7 @@
 <a href="#main" class="sr-only skip-link">Skip to content</a>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- HEADER — sticky nav with logo, links, socials  -->
+<!-- HEADER — fixed bar: logo, wordmark, nav        -->
 <!-- ═══════════════════════════════════════════════ -->
 <header class="site-header" id="top">
   <div class="header-inner">
@@ -24,7 +24,7 @@
   </div>
 </header>
 
-<!-- Mobile nav overlay -->
+<!-- Mobile nav: content-height sheet + backdrop scrim (≤900px) -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <a href="#services">Services</a>
   <a href="#about">About</a>
@@ -170,7 +170,7 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- ABOUT — company background, text-only          -->
+<!-- ABOUT — two paragraphs + full logo             -->
 <!-- ═══════════════════════════════════════════════ -->
 <section class="about" id="about">
   <div class="section-card">
@@ -279,7 +279,7 @@
 (function() {
   'use strict';
 
-  /* ── Smooth scroll for anchor links ── */
+  /* ── In-page links: smooth scroll + focus hand-off ── */
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll('a[href^="#"]').forEach(function(a) {
     a.addEventListener('click', function(e) {
@@ -306,7 +306,7 @@
     });
   });
 
-  /* ── Sticky header background on scroll ── */
+  /* ── Header shadow once the page scrolls ── */
   var header = document.querySelector('.site-header');
   window.addEventListener('scroll', function() {
     if (window.scrollY > 60) {
@@ -350,7 +350,7 @@
   var FEED_URL = {{ .Site.Params.blogRSS | jsonify | safeJS }};
   var MAX_POSTS = 5;
   var GAP = 16;
-  /* No auto-rotate (WCAG 2.2.2): visitors advance with the dots or by swiping. */
+  /* No auto-rotate (WCAG 2.2.2): visitors advance with the arrows, the dots, or by swiping. */
 
   function escapeHTML(str) {
     var div = document.createElement('div');
@@ -569,7 +569,7 @@
       carousel.innerHTML = '<p class="blog-empty">Unable to load posts.</p>';
     });
 
-  /* ── Contact form XHR submission ── */
+  /* ── Contact form: fetch() submission, confirmation shown inline ── */
   var form = document.getElementById('contact-form');
   form.addEventListener('submit', function(e) {
     e.preventDefault();
