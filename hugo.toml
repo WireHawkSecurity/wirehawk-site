@@ -10,7 +10,7 @@ title = "WireHawk Security | Penetration Testing & Offensive Security"
 disableKinds = ["taxonomy", "term", "RSS"]
 
 [params]
-  description = "WireHawk Security is an Arizona-based, veteran-owned offensive security firm specializing in penetration testing across web applications, networks, cloud environments, and AI/LLM systems."
+  description = "Arizona-based, veteran-owned offensive security firm. Penetration testing for web applications, networks, cloud environments, and AI/LLM systems."
   author = "WireHawk Security, LLC"
 
   # Contact form (Formspree) — live endpoint; flows to the form's action attribute

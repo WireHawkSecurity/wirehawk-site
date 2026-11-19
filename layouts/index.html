@@ -71,10 +71,9 @@
       <h2>Our Services</h2>
       <p>
         We identify and validate exploitable weaknesses across web applications,
-        network infrastructure, cloud environments, and AI/LLM-integrated systems. Each finding
-        includes confirmed impact, clear reproduction steps, and prioritized
-        remediation guidance. We pair manual testing with targeted automation,
-        prioritizing depth over volume.
+        network infrastructure, cloud environments, and AI/LLM-integrated systems.
+        We pair manual testing with targeted automation and favor depth over volume.
+        Every finding we report has confirmed impact and clear steps to reproduce it.
       </p>
     </div>
 
@@ -130,7 +129,7 @@
         <ul>
           <li>Prompt injection and jailbreak testing</li>
           <li>RAG and data-source poisoning</li>
-          <li>Insecure output handling and data exfiltration</li>
+          <li>Improper output handling and data exfiltration</li>
           <li>System prompt extraction and context leakage</li>
           <li>Agent, tool, and integration attack surface</li>
         </ul>
@@ -149,19 +148,19 @@
     <ol class="deliverables-list">
       <li>
         <span class="deliverable-label">Scoping</span>
-        <span class="deliverable-desc">Defined targets, rules of engagement, timeline, and testing approach agreed upon before work begins.</span>
+        <span class="deliverable-desc">Targets, rules of engagement, timeline, and testing approach, agreed in writing before work begins.</span>
       </li>
       <li>
         <span class="deliverable-label">Engagement Report</span>
-        <span class="deliverable-desc">Executive summary, detailed findings with reproduction steps and supporting evidence, severity ratings, and prioritized remediation guidance mapped to industry frameworks.</span>
+        <span class="deliverable-desc">Executive summary plus detailed findings, each with a severity rating, reproduction steps, supporting evidence, prioritized remediation guidance, and mapping to industry frameworks.</span>
       </li>
       <li>
         <span class="deliverable-label">Debrief</span>
-        <span class="deliverable-desc">Findings walkthrough with risk context, remediation priorities, and an opportunity to address questions with your team.</span>
+        <span class="deliverable-desc">Findings walkthrough with your team: risk context, what to fix first, and time for your questions.</span>
       </li>
       <li>
         <span class="deliverable-label">Retest Validation</span>
-        <span class="deliverable-desc">Confirmed retest window to verify remediation effectiveness.</span>
+        <span class="deliverable-desc">Agreed retest window to confirm your fixes resolve the findings.</span>
       </li>
     </ol>
 
@@ -182,14 +181,14 @@
       <div class="about-text">
         <p>
           WireHawk Security is an Arizona-based, veteran-owned offensive security firm.
-          We deliver penetration tests that prove real attack paths and produce
-          engineering-ready results. Our findings map to OWASP, MITRE ATT&amp;CK, and
-          NIST frameworks with prioritized remediation guidance and audit-ready evidence.
+          We deliver penetration tests that prove real attack paths and produce results
+          your team can act on. Our findings map to the OWASP, MITRE ATT&amp;CK, and
+          NIST frameworks and come with audit-ready evidence.
         </p>
         <p>
-          We communicate clearly and deliver practical fixes, helping teams understand
-          exploitability, root cause, and the fastest path to resolution. We work directly
-          with you from scoping through debrief and retest validation.
+          We explain how each finding is exploited, why it exists, and the fastest path
+          to fixing it, in terms that work for both engineers and leadership. We work
+          directly with you from scoping through debrief and retest validation.
         </p>
       </div>
     </div>
@@ -219,7 +218,7 @@
 <section class="contact" id="contact">
   <div class="section-card">
     <h2>Contact Us</h2>
-    <p class="contact-intro">Have a question or interested in an engagement? We'd like to hear from you.</p>
+    <p class="contact-intro">Have a question or an engagement in mind? We'd like to hear from you.</p>
     <form
       action="{{ .Site.Params.formspreeEndpoint }}"
       method="POST"
@@ -244,7 +243,7 @@
       </div>
       <div class="form-consent">
         <input type="checkbox" id="consent" name="consent" required>
-        <label for="consent">I accept the above information will be used to contact me.</label>
+        <label for="consent">I agree that WireHawk Security may use this information to contact me.</label>
       </div>
       <button type="submit" class="btn-submit">Submit</button>
     </form>
