@@ -316,11 +316,33 @@
     }
   });
 
-  /* ── Mobile menu toggle ── */
+  /* ── Mobile menu: toggle, plus tap-outside and Escape to close ── */
   var toggle = document.querySelector('.mobile-menu-toggle');
+  var mobileNav = document.querySelector('.mobile-nav');
   toggle.addEventListener('click', function() {
     var open = document.body.classList.toggle('mobile-nav-open');
     this.setAttribute('aria-expanded', open);
+  });
+
+  /* Dismissing the menu (scrim tap or Escape) returns focus to the toggle, so the
+     next Tab starts from the control that opened it. Browsers draw no focus ring
+     for this after a tap or click, only after a key press. */
+  function closeMenu() {
+    if (!document.body.classList.contains('mobile-nav-open')) return;
+    document.body.classList.remove('mobile-nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.focus();
+  }
+
+  /* The dimmed scrim is the nav's own ::before, so a tap on it targets the nav.
+     Only taps below the sheet's bottom edge close it: a tap on the sheet's own
+     padding also targets the nav. */
+  mobileNav.addEventListener('click', function(e) {
+    if (e.target === mobileNav && e.clientY > mobileNav.getBoundingClientRect().bottom) closeMenu();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMenu();
   });
 
   /* ── Blog carousel (direct RSS XML fetch) ── */

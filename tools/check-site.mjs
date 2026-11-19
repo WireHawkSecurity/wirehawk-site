@@ -246,6 +246,12 @@ check('link-focus-handoff',
   !!sectionFocus && /^(none|0)$/.test(val(sectionFocus, 'outline') || ''),
   'anchor handler must focus the target section; section[tabindex="-1"]:focus needs outline: none');
 
+// The open mobile menu also closes on a tap on the scrim below the sheet and on Escape (not just the toggle or a link)
+check('mobile-nav-dismiss',
+  /mobileNav\.addEventListener\('click'/.test(indexHTML) && /mobileNav\.getBoundingClientRect\(\)\.bottom/.test(indexHTML) &&
+  /e\.key === 'Escape'/.test(indexHTML),
+  'keep the scrim-tap and Escape handlers that close the open mobile menu');
+
 // Carousel never auto-rotates without a pause control (WCAG 2.2.2) — no timers in the page script
 check('no-carousel-autorotate', !/setInterval\s*\(/.test(indexHTML), 'auto-rotate (setInterval) must not return without a pause control');
 
